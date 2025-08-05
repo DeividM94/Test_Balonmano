@@ -12,7 +12,7 @@ export default function Exam({ questions, answers, onSelect, timer, onFinish, on
         top: 18,
         right: 18,
         zIndex: 100,
-        background: timer < 60 ? '#a12a2a' : '#217a2b',
+        background: timer < 60 ? '#a12a2a' : '#1a2a4a',
         color: 'white',
         padding: '10px 24px',
         borderRadius: 24,
@@ -22,10 +22,10 @@ export default function Exam({ questions, answers, onSelect, timer, onFinish, on
         letterSpacing: 1,
         minWidth: 120,
         textAlign: 'center',
-        border: timer < 60 ? '2px solid #a12a2a' : '2px solid #217a2b',
+        border: timer < 60 ? '2px solid #a12a2a' : '2px solid #1a2a4a',
         transition: 'background 0.2s, border 0.2s',
       }}>
-        ⏰ {min}:{sec}
+        {min}:{sec}
       </div>
       <div style={{ maxWidth: 800, margin: '0 auto', padding: 32, position: 'relative' }}>
         <button
