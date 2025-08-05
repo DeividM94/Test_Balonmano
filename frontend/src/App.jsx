@@ -81,12 +81,19 @@ function App() {
         allQuestions={allQuestions}
         onSelectBattery={i => {
           setBattery(i);
-          // Calcular preguntas de la batería seleccionada
-          const base = 30;
-          const extra = [12, 13];
-          let ini = i * base;
-          let fin = ini + base - 1;
-          if (extra.includes(i)) fin += 1;
+          // Calcular preguntas de la batería seleccionada con excepción para la 13 y 14
+          let ini, fin;
+          if (i === 12) { // batería 13 (índice 12)
+            ini = 360;
+            fin = 390;
+          } else if (i === 13) { // batería 14 (índice 13)
+            ini = 391;
+            fin = 421;
+          } else {
+            const base = 30;
+            ini = i * base;
+            fin = ini + base - 1;
+          }
           if (fin >= allQuestions.length) fin = allQuestions.length - 1;
           setQuestions(allQuestions.slice(ini, fin + 1));
           setCurrent(0);

@@ -3,7 +3,7 @@ import React from 'react';
 export default function BatterySelector({ allQuestions, onSelectBattery, onBack }) {
   const base = 30;
   const total = allQuestions.length;
-  const numBaterias = Math.ceil(total / base);
+  const numBaterias = 14;
   const extra = [12, 13]; // índices 13 y 14 (0-based)
 
   return (
@@ -54,9 +54,17 @@ export default function BatterySelector({ allQuestions, onSelectBattery, onBack 
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'center' }}>
           {Array.from({ length: numBaterias }).map((_, i) => {
-            let ini = i * base;
-            let fin = ini + base - 1;
-            if (extra.includes(i)) fin += 1;
+            let ini, fin;
+            if (i === 12) { // batería 13 (índice 12)
+              ini = 360;
+              fin = 390;
+            } else if (i === 13) { // batería 14 (índice 13)
+              ini = 391;
+              fin = 421;
+            } else {
+              ini = i * base;
+              fin = ini + base - 1;
+            }
             if (fin >= total) fin = total - 1;
             return (
               <button
