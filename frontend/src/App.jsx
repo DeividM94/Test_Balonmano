@@ -219,14 +219,6 @@ function App() {
     return null;
   }
 
-  // LOG para depuración: mostrar la pregunta y sus respuestas
-  console.log('Pregunta actual:', q);
-  if (q && q.answers) {
-    console.log('Respuestas de la pregunta:', q.answers);
-  } else {
-    console.log('La pregunta no tiene respuestas asociadas');
-  }
-
   const handleSelect = (qid, answerId) => {
     const prev = answers[qid] || [];
     let updated;
