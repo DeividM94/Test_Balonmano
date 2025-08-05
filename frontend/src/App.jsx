@@ -18,7 +18,7 @@ function App() {
   const [finished, setFinished] = useState(false);
   const [battery, setBattery] = useState(null); // Índice de batería seleccionada
   const [examMode, setExamMode] = useState(false); // Si está en modo Examen
-  const [timer, setTimer] = useState(60); // Segundos restantes para el examen
+  const [timer, setTimer] = useState(720); // Segundos restantes para el examen (12 minutos)
   const timerRef = useRef();
 
 
@@ -68,7 +68,7 @@ function App() {
           setCurrent(0);
           setAnswers({});
           setFinished(false);
-          setTimer(60);
+          setTimer(720);
         }}
       />
     );
@@ -117,7 +117,7 @@ function App() {
         onSelect={handleSelectExam}
         timer={timer}
         onFinish={() => setFinished(true)}
-        onExit={() => { setExamMode(false); setQuestions([]); setStarted(false); setCurrent(0); setAnswers({}); setFinished(false); setTimer(60); }}
+        onExit={() => { setExamMode(false); setQuestions([]); setStarted(false); setCurrent(0); setAnswers({}); setFinished(false); setTimer(720); }}
       />
     );
   }
@@ -163,7 +163,7 @@ function App() {
         totalPuntos={totalPuntos}
         totalPosibles={totalPosibles}
         porcentaje={porcentaje}
-        onRestart={() => { setExamMode(false); setQuestions([]); setStarted(false); setCurrent(0); setAnswers({}); setFinished(false); setTimer(60); }}
+        onRestart={() => { setExamMode(false); setQuestions([]); setStarted(false); setCurrent(0); setAnswers({}); setFinished(false); setTimer(720); }}
         isExam={true}
       />
     );
