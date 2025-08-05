@@ -56,7 +56,7 @@ export default function Menu({ onStart, onExam, onChangeBattery }) {
             fontSize: 20,
             padding: '14px 0',
             borderRadius: 10,
-            background: '#1a2a4a',
+            background: '#a12a2a',
             color: 'white',
             border: 'none',
             cursor: 'pointer',
@@ -66,8 +66,8 @@ export default function Menu({ onStart, onExam, onChangeBattery }) {
             transition: 'background 0.2s',
             width: '100%'
           }}
-          onMouseOver={e => e.currentTarget.style.background = '#217a2b'}
-          onMouseOut={e => e.currentTarget.style.background = '#1a2a4a'}
+          onMouseOver={e => e.currentTarget.style.background = '#7a1a1a'}
+          onMouseOut={e => e.currentTarget.style.background = '#a12a2a'}
         >
           Examen
         </button>
