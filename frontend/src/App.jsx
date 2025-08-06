@@ -37,6 +37,8 @@ function App() {
   const timerRef = useRef();
   // Estado para mostrar/ocultar preguntas dudosas
   const [showDudosas, setShowDudosas] = useState(false);
+  // Estado para el modal de confirmación
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
 
   useEffect(() => {
@@ -359,6 +361,10 @@ function App() {
 
   // Botón para finalizar test manualmente
   const handleFinishTest = () => {
+    setShowConfirmModal(true);
+  };
+
+  const confirmFinishTest = () => {
     // Marcar como sin responder las que no tengan respuesta
     const completedAnswers = { ...answers };
     questions.forEach(q => {
@@ -366,6 +372,7 @@ function App() {
     });
     setAnswers(completedAnswers);
     setFinished(true);
+    setShowConfirmModal(false);
   };
 
   // Nueva función para marcar/desmarcar dudosa y persistir en Supabase
@@ -404,67 +411,251 @@ function App() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f7f7f7 0%, #e3e9f7 100%)', padding: 0, margin: 0, fontSize: 16 }}>
-      <div style={{ maxWidth: 450, margin: '0 auto', padding: 24, position: 'relative' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)', padding: 32, margin: 0, fontSize: 16 }}>
+      {/* Modal de confirmación */}
+      {showConfirmModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          backdropFilter: 'blur(5px)'
+        }}>
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.98)',
+            backdropFilter: 'blur(20px)',
+            borderRadius: 16,
+            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)',
+            padding: '32px 24px',
+            maxWidth: 400,
+            width: '90%',
+            border: '1px solid rgba(148, 163, 184, 0.2)',
+            textAlign: 'center'
+          }}>
+            <h3 style={{
+              color: '#1e293b',
+              fontSize: 20,
+              fontWeight: 700,
+              marginBottom: 16,
+              letterSpacing: 0.3
+            }}>
+              Confirmar finalización
+            </h3>
+            <p style={{
+              color: '#64748b',
+              fontSize: 16,
+              lineHeight: 1.5,
+              marginBottom: 24,
+              fontWeight: 500
+            }}>
+              ¿Estás seguro de que quieres finalizar el test? Se evaluarán las respuestas que hayas dado hasta ahora.
+            </p>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                style={{
+                  padding: '12px 24px',
+                  borderRadius: 12,
+                  background: '#64748b',
+                  color: 'white',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                  fontSize: 15,
+                  letterSpacing: 0.5,
+                  boxShadow: '0 4px 12px rgba(100, 116, 139, 0.3)',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  minWidth: 100
+                }}
+                onMouseOver={e => {
+                  e.currentTarget.style.background = '#475569';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(100, 116, 139, 0.4)';
+                }}
+                onMouseOut={e => {
+                  e.currentTarget.style.background = '#64748b';
+                  e.currentTarget.style.transform = 'translateY(0px)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(100, 116, 139, 0.3)';
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={confirmFinishTest}
+                style={{
+                  padding: '12px 24px',
+                  borderRadius: 12,
+                  background: '#dc2626',
+                  color: 'white',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                  fontSize: 15,
+                  letterSpacing: 0.5,
+                  boxShadow: '0 4px 12px rgba(220, 38, 38, 0.3)',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  minWidth: 100
+                }}
+                onMouseOver={e => {
+                  e.currentTarget.style.background = '#b91c1c';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(220, 38, 38, 0.4)';
+                }}
+                onMouseOut={e => {
+                  e.currentTarget.style.background = '#dc2626';
+                  e.currentTarget.style.transform = 'translateY(0px)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.3)';
+                }}
+              >
+                Finalizar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      <div style={{ maxWidth: 600, margin: '0 auto', position: 'relative' }}>
         <button
           onClick={() => { setBattery(null); setQuestions([]); setStarted(false); setCurrent(0); setAnswers({}); setFinished(false); }}
           style={{
             position: 'absolute',
             top: 16,
             right: 16,
-            background: '#a12a2a',
+            background: '#dc2626',
             color: 'white',
             border: 'none',
-            borderRadius: 8,
-            padding: '8px 16px',
+            borderRadius: 12,
+            padding: '10px 20px',
             fontSize: 14,
             fontWeight: 600,
             letterSpacing: 0.5,
             cursor: 'pointer',
-            boxShadow: '0 2px 8px #0002',
+            boxShadow: '0 4px 12px rgba(220, 38, 38, 0.3)',
             zIndex: 2,
-            transition: 'background 0.2s',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
           }}
-          onMouseOver={e => e.currentTarget.style.background = '#7a1a1a'}
-          onMouseOut={e => e.currentTarget.style.background = '#a12a2a'}
+          onMouseOver={e => {
+            e.currentTarget.style.background = '#b91c1c';
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 16px rgba(220, 38, 38, 0.4)';
+          }}
+          onMouseOut={e => {
+            e.currentTarget.style.background = '#dc2626';
+            e.currentTarget.style.transform = 'translateY(0px)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.3)';
+          }}
         >
-          Salir
+          ✕ Salir
         </button>
-        <h1 style={{ color: '#1a2a4a', letterSpacing: 1, marginBottom: 20, fontSize: 24, fontWeight: 700 }}>Test de Balonmano</h1>
-        <div style={{ marginBottom: 16, fontSize: 16, color: '#1a2a4a', fontWeight: 600 }}>
-          <strong>Pregunta {current + 1} de {questions.length}</strong>
-        </div>
-        {/* ...existing code... */}
-        <div style={{position:'relative'}}>
-          <Question q={q} answers={answers} onSelect={handleSelect} />
-          {(user && !user.guest) && (
-            <span
-              onClick={() => handleDoubt(q.id)}
-              style={{ position: 'absolute', right: 0, bottom: 0, margin: 12, cursor: 'pointer' }}
-              title={doubtful.has(q.id) ? 'Quitar marca de duda' : 'Marcar como dudosa'}
+        
+        <div style={{
+          background: 'rgba(255, 255, 255, 0.98)',
+          backdropFilter: 'blur(20px)',
+          borderRadius: 16,
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
+          padding: '32px 24px',
+          border: '1px solid rgba(148, 163, 184, 0.2)',
+          marginTop: 60
+        }}>
+          <h1 style={{ 
+            color: '#1e293b', 
+            letterSpacing: 0.3, 
+            marginBottom: 20, 
+            fontSize: 24, 
+            fontWeight: 700,
+            textAlign: 'center'
+          }}>Test de Balonmano</h1>
+          <div style={{ marginBottom: 24, fontSize: 16, color: '#64748b', fontWeight: 600, textAlign: 'center' }}>
+            <strong>Pregunta {current + 1} de {questions.length}</strong>
+          </div>
+          {/* ...existing code... */}
+          <div style={{position:'relative'}}>
+            <Question q={q} answers={answers} onSelect={handleSelect} />
+            {(user && !user.guest) && (
+              <span
+                onClick={() => handleDoubt(q.id)}
+                style={{ position: 'absolute', right: 0, bottom: 0, margin: 12, cursor: 'pointer' }}
+                title={doubtful.has(q.id) ? 'Quitar marca de duda' : 'Marcar como dudosa'}
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="10" cy="10" r="9" stroke={doubtful.has(q.id) ? '#dc2626' : '#64748b'} strokeWidth="2" fill="none" />
+                  <path d="M10 6.5C11.1046 6.5 12 7.39543 12 8.5C12 9.60457 11.1046 10.5 10 10.5C9.44772 10.5 9 10.9477 9 11.5V12" stroke={doubtful.has(q.id) ? '#dc2626' : '#64748b'} strokeWidth="1.5" strokeLinecap="round" />
+                  <circle cx="10" cy="14" r="1" fill={doubtful.has(q.id) ? '#dc2626' : '#64748b'} />
+                </svg>
+              </span>
+            )}
+          </div>
+          <div style={{ display: 'flex', gap: 12, marginTop: 20, justifyContent: 'space-between' }}>
+            <button
+              onClick={handleFinishTest}
+              style={{ 
+                background: '#64748b', 
+                color: 'white', 
+                border: 'none', 
+                borderRadius: 12, 
+                padding: '12px 20px', 
+                flex: 1,
+                fontSize: 15, 
+                fontWeight: 600, 
+                cursor: 'pointer', 
+                letterSpacing: 0.5,
+                boxShadow: '0 4px 12px rgba(100, 116, 139, 0.3)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
+              onMouseOver={e => {
+                e.currentTarget.style.background = '#475569';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 16px rgba(100, 116, 139, 0.4)';
+              }}
+              onMouseOut={e => {
+                e.currentTarget.style.background = '#64748b';
+                e.currentTarget.style.transform = 'translateY(0px)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(100, 116, 139, 0.3)';
+              }}
             >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="10" cy="10" r="9" stroke={doubtful.has(q.id) ? '#a12a2a' : '#1a2a4a'} strokeWidth="2" fill="none" />
-                <path d="M10 6.5C11.1046 6.5 12 7.39543 12 8.5C12 9.60457 11.1046 10.5 10 10.5C9.44772 10.5 9 10.9477 9 11.5V12" stroke={doubtful.has(q.id) ? '#a12a2a' : '#1a2a4a'} strokeWidth="1.5" strokeLinecap="round" />
-                <circle cx="10" cy="14" r="1" fill={doubtful.has(q.id) ? '#a12a2a' : '#1a2a4a'} />
-              </svg>
-            </span>
-          )}
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 20, alignItems: 'flex-end' }}>
-          <button
-            onClick={handleNext}
-            disabled={!(answers[q.id] && answers[q.id].length > 0)}
-            style={{ fontSize: 16, padding: '10px 20px', minWidth: 120, borderRadius: 6, background: '#217a2b', color: 'white', border: 'none', cursor: !(answers[q.id] && answers[q.id].length > 0) ? 'not-allowed' : 'pointer', fontWeight: 600, letterSpacing: 0.5 }}
-          >
-            {current + 1 === questions.length ? 'Finalizar' : 'Siguiente'}
-          </button>
-          <button
-            onClick={handleFinishTest}
-            style={{ background: '#1a2a4a', color: 'white', border: 'none', borderRadius: 6, padding: '10px 20px', minWidth: 120, fontSize: 16, fontWeight: 600, cursor: 'pointer', letterSpacing: 0.5 }}
-          >
-            Finalizar test
-          </button>
+              Finalizar test
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={!(answers[q.id] && answers[q.id].length > 0)}
+              style={{ 
+                fontSize: 15, 
+                padding: '12px 20px', 
+                flex: 1,
+                borderRadius: 12, 
+                background: (answers[q.id] && answers[q.id].length > 0) ? '#059669' : '#94a3b8', 
+                color: 'white', 
+                border: 'none', 
+                cursor: !(answers[q.id] && answers[q.id].length > 0) ? 'not-allowed' : 'pointer', 
+                fontWeight: 600, 
+                letterSpacing: 0.5,
+                boxShadow: (answers[q.id] && answers[q.id].length > 0) ? '0 4px 12px rgba(5, 150, 105, 0.3)' : 'none',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
+              onMouseOver={e => {
+                if (answers[q.id] && answers[q.id].length > 0) {
+                  e.currentTarget.style.background = '#047857';
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(5, 150, 105, 0.4)';
+                }
+              }}
+              onMouseOut={e => {
+                if (answers[q.id] && answers[q.id].length > 0) {
+                  e.currentTarget.style.background = '#059669';
+                  e.currentTarget.style.transform = 'translateY(0px)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.3)';
+                }
+              }}
+            >
+              {current + 1 === questions.length ? 'Finalizar' : 'Siguiente'}
+            </button>
+          </div>
         </div>
       </div>
     </div>

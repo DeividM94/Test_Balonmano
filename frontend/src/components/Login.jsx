@@ -26,41 +26,168 @@ export default function Login({ onLogin }) {
   };
 
   return (
-    <div style={{ maxWidth: 360, margin: '40px auto', padding: 20, background: '#fff', borderRadius: 12, boxShadow: '0 4px 16px #0002' }}>
-      <h2 style={{ textAlign: 'center', color: '#1a2a4a', marginBottom: 20, fontSize: 22, fontWeight: 700 }}>Iniciar sesión</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          required
-          style={{ width: '100%', padding: 12, marginBottom: 16, borderRadius: 8, border: '1px solid #ccc', fontSize: 16, boxSizing: 'border-box', maxWidth: '100%' }}
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          required
-          style={{ width: '100%', padding: 12, marginBottom: 16, borderRadius: 8, border: '1px solid #ccc', fontSize: 16, boxSizing: 'border-box', maxWidth: '100%' }}
-        />
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 32
+    }}>
+      <div style={{ 
+        maxWidth: 400, 
+        width: '100%',
+        background: 'rgba(255, 255, 255, 0.98)', 
+        backdropFilter: 'blur(20px)', 
+        borderRadius: 16, 
+        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.15)',
+        padding: '40px 32px',
+        border: '1px solid rgba(148, 163, 184, 0.2)',
+        margin: '0 16px'
+      }}>
+        <h2 style={{ 
+          textAlign: 'center', 
+          color: '#1e293b', 
+          marginBottom: 32, 
+          fontSize: 28, 
+          fontWeight: 700,
+          letterSpacing: 0.3
+        }}>Iniciar sesión</h2>
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+            style={{ 
+              width: '100%', 
+              padding: '14px 16px', 
+              marginBottom: 20, 
+              borderRadius: 8, 
+              border: '1px solid rgba(148, 163, 184, 0.3)', 
+              fontSize: 16, 
+              boxSizing: 'border-box', 
+              background: 'rgba(255, 255, 255, 0.7)',
+              transition: 'all 0.2s ease',
+              fontFamily: 'inherit',
+              color: '#1e293b',
+              fontWeight: 500
+            }}
+            onFocus={e => {
+              e.currentTarget.style.borderColor = '#059669';
+              e.currentTarget.style.boxShadow = '0 0 0 3px rgba(5, 150, 105, 0.1)';
+            }}
+            onBlur={e => {
+              e.currentTarget.style.borderColor = 'rgba(148, 163, 184, 0.3)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+            style={{ 
+              width: '100%', 
+              padding: '14px 16px', 
+              marginBottom: 24, 
+              borderRadius: 8, 
+              border: '1px solid rgba(148, 163, 184, 0.3)', 
+              fontSize: 16, 
+              boxSizing: 'border-box', 
+              background: 'rgba(255, 255, 255, 0.7)',
+              transition: 'all 0.2s ease',
+              fontFamily: 'inherit',
+              color: '#1e293b',
+              fontWeight: 500
+            }}
+            onFocus={e => {
+              e.currentTarget.style.borderColor = '#059669';
+              e.currentTarget.style.boxShadow = '0 0 0 3px rgba(5, 150, 105, 0.1)';
+            }}
+            onBlur={e => {
+              e.currentTarget.style.borderColor = 'rgba(148, 163, 184, 0.3)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          />
+          <button
+            type="submit"
+            disabled={loading}
+            style={{ 
+              width: '100%', 
+              padding: '16px 24px', 
+              borderRadius: 16, 
+              background: loading ? '#94a3b8' : '#059669', 
+              color: 'white', 
+              fontWeight: 700, 
+              fontSize: 16, 
+              border: 'none', 
+              cursor: loading ? 'not-allowed' : 'pointer', 
+              marginBottom: 16,
+              boxShadow: loading ? 'none' : '0 4px 12px rgba(5, 150, 105, 0.3)',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              letterSpacing: 0.5
+            }}
+            onMouseOver={e => {
+              if (!loading) {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 6px 16px rgba(5, 150, 105, 0.4)';
+              }
+            }}
+            onMouseOut={e => {
+              e.currentTarget.style.transform = 'translateY(0px)';
+              e.currentTarget.style.boxShadow = loading ? 'none' : '0 4px 12px rgba(5, 150, 105, 0.3)';
+            }}
+          >
+            {loading ? 'Entrando...' : 'Entrar'}
+          </button>
+        </form>
         <button
-          type="submit"
-          disabled={loading}
-          style={{ width: '100%', padding: 12, borderRadius: 8, background: '#217a2b', color: 'white', fontWeight: 600, fontSize: 16, border: 'none', cursor: 'pointer', marginBottom: 12 }}
+          type="button"
+          onClick={() => onLogin({ guest: true })}
+          style={{ 
+            width: '100%', 
+            padding: '16px 24px', 
+            borderRadius: 16, 
+            background: '#64748b', 
+            color: 'white', 
+            fontWeight: 700, 
+            fontSize: 16, 
+            border: 'none', 
+            cursor: 'pointer', 
+            marginBottom: 16,
+            boxShadow: '0 4px 12px rgba(100, 116, 139, 0.3)',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            letterSpacing: 0.5
+          }}
+          onMouseOver={e => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 16px rgba(100, 116, 139, 0.4)';
+          }}
+          onMouseOut={e => {
+            e.currentTarget.style.transform = 'translateY(0px)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(100, 116, 139, 0.3)';
+          }}
         >
-          {loading ? 'Entrando...' : 'Entrar'}
+          Entrar como invitado
         </button>
-      </form>
-      <button
-        type="button"
-        onClick={() => onLogin({ guest: true })}
-        style={{ width: '100%', padding: 12, borderRadius: 8, background: '#1a2a4a', color: 'white', fontWeight: 600, fontSize: 16, border: 'none', cursor: 'pointer', marginBottom: 12 }}
-      >
-        Entrar como invitado
-      </button>
-      {error && <div style={{ color: '#a12a2a', marginTop: 12, textAlign: 'center', fontSize: 14 }}>{error}</div>}
+        {error && (
+          <div style={{ 
+            color: '#ef4444', 
+            marginTop: 16, 
+            textAlign: 'center', 
+            fontSize: 14,
+            background: 'rgba(239, 68, 68, 0.1)',
+            padding: '12px 16px',
+            borderRadius: 12,
+            border: '1px solid rgba(239, 68, 68, 0.2)'
+          }}>
+            ⚠ {error}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

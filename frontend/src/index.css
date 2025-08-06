@@ -9,9 +9,14 @@ html, body {
 
 body {
   margin: 0 !important;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: #f7f7f7;
+  font-family: 'Inter', 'Segoe UI', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
   font-size: 16px;
+  line-height: 1.6;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 #root {
