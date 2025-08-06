@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function BatterySelector({ allQuestions, onSelectBattery, onBack, user, preguntasDudosas }) {
+export default function BatterySelector({ allQuestions, batteryProgress, onSelectBattery, onBack, user, preguntasDudosas }) {
   const base = 30;
   const total = allQuestions.length;
   const numBaterias = 14;
@@ -90,6 +90,9 @@ export default function BatterySelector({ allQuestions, onSelectBattery, onBack,
             }
             if (fin >= total) fin = total - 1;
             
+            const progress = batteryProgress[i];
+            const isCompleted = progress && progress.completed;
+            
             return (
               <button
                 key={i}
@@ -98,13 +101,17 @@ export default function BatterySelector({ allQuestions, onSelectBattery, onBack,
                   fontSize: 15,
                   padding: '0',
                   borderRadius: 16,
-                  background: '#059669',
+                  background: isCompleted 
+                    ? (progress.percentage >= 80 ? '#22c55e' : progress.percentage >= 60 ? '#f59e0b' : '#ef4444')
+                    : '#059669',
                   color: 'white',
                   border: 'none',
                   cursor: 'pointer',
                   fontWeight: 700,
                   letterSpacing: 0.5,
-                  boxShadow: '0 4px 12px rgba(5, 150, 105, 0.3)',
+                  boxShadow: isCompleted
+                    ? (progress.percentage >= 80 ? '0 4px 12px rgba(34, 197, 94, 0.3)' : progress.percentage >= 60 ? '0 4px 12px rgba(245, 158, 11, 0.3)' : '0 4px 12px rgba(239, 68, 68, 0.3)')
+                    : '0 4px 12px rgba(5, 150, 105, 0.3)',
                   width: '130px',
                   height: '90px',
                   display: 'flex',
@@ -112,24 +119,55 @@ export default function BatterySelector({ allQuestions, onSelectBattery, onBack,
                   alignItems: 'center',
                   justifyContent: 'center',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  position: 'relative'
                 }}
                 onMouseOver={e => {
-                  e.currentTarget.style.background = '#047857';
+                  if (isCompleted) {
+                    e.currentTarget.style.background = progress.percentage >= 80 ? '#16a34a' : progress.percentage >= 60 ? '#d97706' : '#dc2626';
+                  } else {
+                    e.currentTarget.style.background = '#047857';
+                  }
                   e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 6px 16px rgba(5, 150, 105, 0.4)';
+                  e.currentTarget.style.boxShadow = isCompleted
+                    ? (progress.percentage >= 80 ? '0 6px 16px rgba(34, 197, 94, 0.4)' : progress.percentage >= 60 ? '0 6px 16px rgba(245, 158, 11, 0.4)' : '0 6px 16px rgba(239, 68, 68, 0.4)')
+                    : '0 6px 16px rgba(5, 150, 105, 0.4)';
                 }}
                 onMouseOut={e => {
-                  e.currentTarget.style.background = '#059669';
+                  e.currentTarget.style.background = isCompleted 
+                    ? (progress.percentage >= 80 ? '#22c55e' : progress.percentage >= 60 ? '#f59e0b' : '#ef4444')
+                    : '#059669';
                   e.currentTarget.style.transform = 'translateY(0px)';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.3)';
+                  e.currentTarget.style.boxShadow = isCompleted
+                    ? (progress.percentage >= 80 ? '0 4px 12px rgba(34, 197, 94, 0.3)' : progress.percentage >= 60 ? '0 4px 12px rgba(245, 158, 11, 0.3)' : '0 4px 12px rgba(239, 68, 68, 0.3)')
+                    : '0 4px 12px rgba(5, 150, 105, 0.3)';
                 }}
               >
+                {isCompleted && (
+                  <div style={{
+                    position: 'absolute',
+                    top: 4,
+                    right: 4,
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    borderRadius: 8,
+                    padding: '2px 6px',
+                    fontSize: 10,
+                    fontWeight: 600,
+                    color: progress.percentage >= 80 ? '#22c55e' : progress.percentage >= 60 ? '#f59e0b' : '#ef4444'
+                  }}>
+                    {progress.percentage}%
+                  </div>
+                )}
                 <div style={{ fontSize: '16px', fontWeight: 700, marginBottom: '4px' }}>
                   Batería {i + 1}
                 </div>
                 <div style={{ fontSize: '12px', fontWeight: 400, opacity: 0.9 }}>
                   {ini + 1}-{fin + 1}
                 </div>
+                {isCompleted && (
+                  <div style={{ fontSize: '10px', fontWeight: 500, opacity: 0.8, marginTop: '2px' }}>
+                    {progress.attempts > 1 ? `${progress.attempts} intentos` : 'Completada'}
+                  </div>
+                )}
               </button>
             );
           })}

@@ -1,31 +1,82 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Question from './Question';
 
 export default function Exam({ questions, answers, onSelect, timer, onFinish, onExit }) {
+  const [timerPosition, setTimerPosition] = useState({ x: 24, y: 24 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    const rect = e.currentTarget.getBoundingClientRect();
+    setDragOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    
+    const newX = e.clientX - dragOffset.x;
+    const newY = e.clientY - dragOffset.y;
+    
+    // Limitar el movimiento dentro de la ventana
+    const maxX = window.innerWidth - 120; // ancho del timer
+    const maxY = window.innerHeight - 60; // alto del timer
+    
+    setTimerPosition({
+      x: Math.max(0, Math.min(newX, maxX)),
+      y: Math.max(0, Math.min(newY, maxY))
+    });
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  React.useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isDragging, dragOffset]);
+
   const min = Math.floor(timer / 60).toString().padStart(2, '0');
   const sec = (timer % 60).toString().padStart(2, '0');
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #1e293b 0%, #334155 100%)', padding: 0, margin: 0, position: 'relative' }}>
-      {/* Temporizador flotante */}
-      <div style={{
-        position: 'fixed',
-        top: 24,
-        right: 24,
-        zIndex: 100,
-        background: timer < 60 ? '#dc2626' : '#059669',
-        color: 'white',
-        padding: '16px 24px',
-        borderRadius: 16,
-        fontSize: 20,
-        fontWeight: 700,
-        boxShadow: timer < 60 ? '0 10px 30px rgba(220, 38, 38, 0.4)' : '0 10px 30px rgba(5, 150, 105, 0.4)',
-        letterSpacing: 0.5,
-        minWidth: 120,
-        textAlign: 'center',
-        border: '2px solid rgba(255, 255, 255, 0.2)',
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        backdropFilter: 'blur(10px)',
-      }}>
+      {/* Temporizador flotante movible */}
+      <div 
+        style={{
+          position: 'fixed',
+          left: timerPosition.x,
+          top: timerPosition.y,
+          zIndex: 100,
+          background: timer < 60 ? '#dc2626' : '#059669',
+          color: 'white',
+          padding: '8px 16px',
+          borderRadius: 12,
+          fontSize: 14,
+          fontWeight: 700,
+          boxShadow: timer < 60 ? '0 4px 12px rgba(220, 38, 38, 0.4)' : '0 4px 12px rgba(5, 150, 105, 0.4)',
+          letterSpacing: 0.5,
+          textAlign: 'center',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          transition: isDragging ? 'none' : 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          backdropFilter: 'blur(10px)',
+          cursor: isDragging ? 'grabbing' : 'grab',
+          userSelect: 'none',
+          opacity: isDragging ? 0.8 : 1,
+          minWidth: 80
+        }}
+        onMouseDown={handleMouseDown}
+        title="Arrastra para mover"
+      >
         {min}:{sec}
       </div>
       <div style={{ maxWidth: 800, margin: '0 auto', padding: 32, position: 'relative' }}>

@@ -39,6 +39,104 @@ function App() {
   const [showDudosas, setShowDudosas] = useState(false);
   // Estado para el modal de confirmación
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  // Estado para el progreso de baterías
+  const [batteryProgress, setBatteryProgress] = useState({});
+
+  // Cargar progreso de baterías desde Supabase
+  useEffect(() => {
+    const fetchBatteryProgress = async () => {
+      if (user && !user.guest) {
+        try {
+          const { data, error } = await supabase
+            .from('battery_progress')
+            .select('*')
+            .eq('user_id', user.id);
+          
+          if (!error && data) {
+            const progressMap = {};
+            data.forEach(item => {
+              progressMap[item.battery_id] = {
+                completed: item.completed,
+                score: item.score,
+                percentage: item.percentage,
+                completed_at: item.completed_at,
+                attempts: item.attempts || 1
+              };
+            });
+            setBatteryProgress(progressMap);
+          } else if (error) {
+            console.warn('Error al cargar progreso de baterías:', error.message);
+            // Si la tabla no existe, continúa sin progreso
+            setBatteryProgress({});
+          }
+        } catch (err) {
+          console.warn('Error al conectar con la base de datos:', err);
+          setBatteryProgress({});
+        }
+      }
+    };
+    fetchBatteryProgress();
+  }, [user]);
+
+  // Guardar progreso de batería en Supabase
+  const saveBatteryProgress = async (batteryId, score, totalPossible, percentage) => {
+    if (!user || user.guest) return;
+    
+    try {
+      const progressData = {
+        user_id: user.id,
+        battery_id: batteryId,
+        completed: true,
+        score: score,
+        total_possible: totalPossible,
+        percentage: percentage,
+        completed_at: new Date().toISOString()
+      };
+
+      // Verificar si ya existe un registro
+      const { data: existing } = await supabase
+        .from('battery_progress')
+        .select('attempts')
+        .eq('user_id', user.id)
+        .eq('battery_id', batteryId)
+        .single();
+
+      if (existing) {
+        // Actualizar registro existente
+        await supabase
+          .from('battery_progress')
+          .update({
+            ...progressData,
+            attempts: (existing.attempts || 1) + 1
+          })
+          .eq('user_id', user.id)
+          .eq('battery_id', batteryId);
+      } else {
+        // Crear nuevo registro
+        await supabase
+          .from('battery_progress')
+          .insert({
+            ...progressData,
+            attempts: 1
+          });
+      }
+
+      // Actualizar estado local
+      setBatteryProgress(prev => ({
+        ...prev,
+        [batteryId]: {
+          completed: true,
+          score: score,
+          percentage: percentage,
+          completed_at: new Date().toISOString(),
+          attempts: existing ? (existing.attempts || 1) + 1 : 1
+        }
+      }));
+    } catch (error) {
+      console.warn('Error al guardar progreso de batería:', error.message);
+      // La aplicación continúa funcionando sin guardar progreso
+    }
+  };
 
 
   useEffect(() => {
@@ -88,6 +186,68 @@ function App() {
     }
     // eslint-disable-next-line
   }, [examMode, started, finished]);
+
+  // Hook para guardar progreso cuando se finaliza un test
+  useEffect(() => {
+    const saveProgress = async () => {
+      if (finished && battery !== null && battery !== 'dudosas') {
+        // Calcular resultados
+        let totalPuntos = 0;
+        let totalPosibles = 0;
+        questions.forEach(q => {
+          const userAnswers = answers[q.id] || [];
+          const correctAnswers = q.answers.filter(a => a.is_correct).map(a => a.id);
+          totalPosibles += correctAnswers.length;
+          let aciertos = 0;
+          let fallos = 0;
+          correctAnswers.forEach(id => {
+            if (userAnswers.includes(id)) aciertos++;
+          });
+          userAnswers.forEach(id => {
+            if (!correctAnswers.includes(id)) fallos++;
+          });
+          let puntosPregunta = aciertos - fallos;
+          if (puntosPregunta < 0) puntosPregunta = 0;
+          totalPuntos += puntosPregunta;
+        });
+        const porcentaje = totalPosibles > 0 ? Math.round((totalPuntos / totalPosibles) * 100) : 0;
+        
+        await saveBatteryProgress(battery, totalPuntos, totalPosibles, porcentaje);
+      }
+    };
+    saveProgress();
+  }, [finished, battery, questions, answers]);
+
+  // Hook para guardar progreso cuando se finaliza un test
+  useEffect(() => {
+    const saveProgress = async () => {
+      if (finished && battery !== null && battery !== 'dudosas') {
+        // Calcular resultados
+        let totalPuntos = 0;
+        let totalPosibles = 0;
+        questions.forEach(q => {
+          const userAnswers = answers[q.id] || [];
+          const correctAnswers = q.answers.filter(a => a.is_correct).map(a => a.id);
+          totalPosibles += correctAnswers.length;
+          let aciertos = 0;
+          let fallos = 0;
+          correctAnswers.forEach(id => {
+            if (userAnswers.includes(id)) aciertos++;
+          });
+          userAnswers.forEach(id => {
+            if (!correctAnswers.includes(id)) fallos++;
+          });
+          let puntosPregunta = aciertos - fallos;
+          if (puntosPregunta < 0) puntosPregunta = 0;
+          totalPuntos += puntosPregunta;
+        });
+        const porcentaje = totalPosibles > 0 ? Math.round((totalPuntos / totalPosibles) * 100) : 0;
+        
+        await saveBatteryProgress(battery, totalPuntos, totalPosibles, porcentaje);
+      }
+    };
+    saveProgress();
+  }, [finished, battery, questions, answers]);
 
   // --- RENDER ---
   const handleLogout = () => {
@@ -160,6 +320,7 @@ function App() {
     return (
       <BatterySelector
         allQuestions={allQuestions}
+        batteryProgress={batteryProgress}
         onSelectBattery={i => {
           if (i === 'dudosas') {
             setBattery('dudosas');
@@ -299,7 +460,6 @@ function App() {
       };
     });
     const porcentaje = totalPosibles > 0 ? Math.round((totalPuntos / totalPosibles) * 100) : 0;
-
 
     return (
       <Results
