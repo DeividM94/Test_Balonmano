@@ -404,24 +404,24 @@ function App() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f7f7f7 0%, #e3e9f7 100%)', padding: 0, margin: 0, fontSize: 12 }}>
-      <div style={{ maxWidth: 340, margin: '0 auto', padding: 8, position: 'relative' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f7f7f7 0%, #e3e9f7 100%)', padding: 0, margin: 0, fontSize: 16 }}>
+      <div style={{ maxWidth: 450, margin: '0 auto', padding: 24, position: 'relative' }}>
         <button
           onClick={() => { setBattery(null); setQuestions([]); setStarted(false); setCurrent(0); setAnswers({}); setFinished(false); }}
           style={{
             position: 'absolute',
-            top: 12,
-            right: 12,
+            top: 16,
+            right: 16,
             background: '#a12a2a',
             color: 'white',
             border: 'none',
-            borderRadius: 6,
-            padding: '4px 12px',
-            fontSize: 13,
+            borderRadius: 8,
+            padding: '8px 16px',
+            fontSize: 14,
             fontWeight: 600,
-            letterSpacing: 1,
+            letterSpacing: 0.5,
             cursor: 'pointer',
-            boxShadow: '0 1px 4px #0001',
+            boxShadow: '0 2px 8px #0002',
             zIndex: 2,
             transition: 'background 0.2s',
           }}
@@ -430,8 +430,8 @@ function App() {
         >
           Salir
         </button>
-        <h1 style={{ color: '#1a2a4a', letterSpacing: 1, marginBottom: 10, fontSize: 16 }}>Test de Balonmano</h1>
-        <div style={{ marginBottom: 10, fontSize: 12, color: '#1a2a4a' }}>
+        <h1 style={{ color: '#1a2a4a', letterSpacing: 1, marginBottom: 20, fontSize: 24, fontWeight: 700 }}>Test de Balonmano</h1>
+        <div style={{ marginBottom: 16, fontSize: 16, color: '#1a2a4a', fontWeight: 600 }}>
           <strong>Pregunta {current + 1} de {questions.length}</strong>
         </div>
         {/* ...existing code... */}
@@ -451,17 +451,17 @@ function App() {
             </span>
           )}
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 14, alignItems: 'flex-end' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 20, alignItems: 'flex-end' }}>
           <button
             onClick={handleNext}
             disabled={!(answers[q.id] && answers[q.id].length > 0)}
-            style={{ fontSize: 12, padding: '5px 8px', minWidth: 80, borderRadius: 4, background: '#217a2b', color: 'white', border: 'none', cursor: !(answers[q.id] && answers[q.id].length > 0) ? 'not-allowed' : 'pointer', fontWeight: 600, letterSpacing: 1 }}
+            style={{ fontSize: 16, padding: '10px 20px', minWidth: 120, borderRadius: 6, background: '#217a2b', color: 'white', border: 'none', cursor: !(answers[q.id] && answers[q.id].length > 0) ? 'not-allowed' : 'pointer', fontWeight: 600, letterSpacing: 0.5 }}
           >
             {current + 1 === questions.length ? 'Finalizar' : 'Siguiente'}
           </button>
           <button
             onClick={handleFinishTest}
-            style={{ background: '#1a2a4a', color: 'white', border: 'none', borderRadius: 4, padding: '5px 8px', minWidth: 80, fontSize: 12, fontWeight: 600, cursor: 'pointer', letterSpacing: 1 }}
+            style={{ background: '#1a2a4a', color: 'white', border: 'none', borderRadius: 6, padding: '10px 20px', minWidth: 120, fontSize: 16, fontWeight: 600, cursor: 'pointer', letterSpacing: 0.5 }}
           >
             Finalizar test
           </button>

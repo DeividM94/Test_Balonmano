@@ -9,41 +9,41 @@ export default function Exam({ questions, answers, onSelect, timer, onFinish, on
       {/* Temporizador flotante */}
       <div style={{
         position: 'fixed',
-        top: 18,
-        right: 18,
+        top: 20,
+        right: 20,
         zIndex: 100,
         background: timer < 60 ? '#a12a2a' : '#1a2a4a',
         color: 'white',
-        padding: '10px 24px',
-        borderRadius: 24,
-        fontSize: 22,
+        padding: '12px 20px',
+        borderRadius: 20,
+        fontSize: 18,
         fontWeight: 700,
-        boxShadow: '0 2px 12px #0002',
-        letterSpacing: 1,
-        minWidth: 120,
+        boxShadow: '0 4px 12px #0003',
+        letterSpacing: 0.5,
+        minWidth: 100,
         textAlign: 'center',
         border: timer < 60 ? '2px solid #a12a2a' : '2px solid #1a2a4a',
         transition: 'background 0.2s, border 0.2s',
       }}>
         {min}:{sec}
       </div>
-      <div style={{ maxWidth: 800, margin: '0 auto', padding: 32, position: 'relative' }}>
+      <div style={{ maxWidth: 700, margin: '0 auto', padding: 24, position: 'relative' }}>
         <button
           onClick={onExit}
           style={{
             position: 'absolute',
-            top: 24,
-            right: 24,
+            top: 20,
+            right: 20,
             background: '#a12a2a',
             color: 'white',
             border: 'none',
-            borderRadius: 8,
-            padding: '8px 24px',
-            fontSize: 16,
-            fontWeight: 700,
-            letterSpacing: 1,
+            borderRadius: 6,
+            padding: '8px 16px',
+            fontSize: 14,
+            fontWeight: 600,
+            letterSpacing: 0.5,
             cursor: 'pointer',
-            boxShadow: '0 2px 8px #0001',
+            boxShadow: '0 2px 6px #0002',
             zIndex: 2,
             transition: 'background 0.2s',
           }}
@@ -52,19 +52,19 @@ export default function Exam({ questions, answers, onSelect, timer, onFinish, on
         >
           Salir
         </button>
-        <h1 style={{ color: '#1a2a4a', letterSpacing: 1, marginBottom: 24 }}>Examen de Balonmano</h1>
+        <h1 style={{ color: '#1a2a4a', letterSpacing: 0.5, marginBottom: 24, fontSize: 24, fontWeight: 700 }}>Examen de Balonmano</h1>
         {/* El temporizador ya es flotante, así que quitamos el de aquí */}
         <form onSubmit={e => { e.preventDefault(); onFinish(); }}>
           <ul style={{ padding: 0, listStyle: 'none' }}>
             {questions.map((q, idx) => (
-              <li key={q.id} style={{ marginBottom: 32 }}>
+              <li key={q.id} style={{ marginBottom: 24 }}>
                 <Question q={q} answers={answers} onSelect={onSelect} idx={idx} />
               </li>
             ))}
           </ul>
           <button
             type="submit"
-            style={{ fontSize: 20, padding: '14px 48px', borderRadius: 10, background: '#217a2b', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 700, letterSpacing: 1, boxShadow: '0 2px 12px #0001', transition: 'background 0.2s', margin: '0 auto', display: 'block' }}
+            style={{ fontSize: 18, padding: '12px 32px', borderRadius: 8, background: '#217a2b', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 700, letterSpacing: 0.5, boxShadow: '0 4px 12px #0002', transition: 'background 0.2s', margin: '0 auto', display: 'block' }}
             onMouseOver={e => e.currentTarget.style.background = '#1a2a4a'}
             onMouseOut={e => e.currentTarget.style.background = '#217a2b'}
           >
