@@ -218,37 +218,6 @@ function App() {
     saveProgress();
   }, [finished, battery, questions, answers]);
 
-  // Hook para guardar progreso cuando se finaliza un test
-  useEffect(() => {
-    const saveProgress = async () => {
-      if (finished && battery !== null && battery !== 'dudosas') {
-        // Calcular resultados
-        let totalPuntos = 0;
-        let totalPosibles = 0;
-        questions.forEach(q => {
-          const userAnswers = answers[q.id] || [];
-          const correctAnswers = q.answers.filter(a => a.is_correct).map(a => a.id);
-          totalPosibles += correctAnswers.length;
-          let aciertos = 0;
-          let fallos = 0;
-          correctAnswers.forEach(id => {
-            if (userAnswers.includes(id)) aciertos++;
-          });
-          userAnswers.forEach(id => {
-            if (!correctAnswers.includes(id)) fallos++;
-          });
-          let puntosPregunta = aciertos - fallos;
-          if (puntosPregunta < 0) puntosPregunta = 0;
-          totalPuntos += puntosPregunta;
-        });
-        const porcentaje = totalPosibles > 0 ? Math.round((totalPuntos / totalPosibles) * 100) : 0;
-        
-        await saveBatteryProgress(battery, totalPuntos, totalPosibles, porcentaje);
-      }
-    };
-    saveProgress();
-  }, [finished, battery, questions, answers]);
-
   // --- RENDER ---
   const handleLogout = () => {
     setUser(null);
