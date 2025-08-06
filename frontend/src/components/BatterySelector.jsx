@@ -1,6 +1,7 @@
 import React from 'react';
+import PreguntasDudosas from './PreguntasDudosas';
 
-export default function BatterySelector({ allQuestions, onSelectBattery, onBack }) {
+export default function BatterySelector({ allQuestions, onSelectBattery, onBack, showDudosas, setShowDudosas, preguntasDudosas, user }) {
   const base = 30;
   const total = allQuestions.length;
   const numBaterias = 14;
@@ -15,34 +16,37 @@ export default function BatterySelector({ allQuestions, onSelectBattery, onBack 
       justifyContent: 'center',
       flexDirection: 'column',
       padding: 0,
-      margin: 0
+      margin: 0,
+      fontSize: 13
     }}>
       <div style={{
         background: '#fff',
-        borderRadius: 18,
-        boxShadow: '0 4px 24px #0002',
-        padding: '48px 36px',
-        maxWidth: 480,
+        borderRadius: 14,
+        boxShadow: '0 2px 12px #0001',
+        padding: '24px 10px',
+        maxWidth: 340,
         width: '100%',
         textAlign: 'center',
+        margin: '0 8px',
+        boxSizing: 'border-box'
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
-          <h2 style={{ color: '#1a2a4a', fontSize: 28, margin: 0 }}>Selecciona una batería</h2>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+          <h2 style={{ color: '#1a2a4a', fontSize: 16, margin: 0, fontWeight: 700, letterSpacing: 1 }}>Selecciona una batería</h2>
           {onBack && (
             <button
               onClick={onBack}
               style={{
-                marginLeft: 16,
-                fontSize: 16,
-                padding: '8px 24px',
-                borderRadius: 8,
+                marginLeft: 8,
+                fontSize: 12,
+                padding: '4px 12px',
+                borderRadius: 5,
                 background: '#a12a2a',
                 color: 'white',
                 border: 'none',
                 cursor: 'pointer',
                 fontWeight: 600,
                 letterSpacing: 1,
-                boxShadow: '0 2px 8px #0001',
+                boxShadow: '0 1px 4px #0001',
                 transition: 'background 0.2s',
               }}
               onMouseOver={e => e.currentTarget.style.background = '#7a1a1a'}
@@ -52,7 +56,7 @@ export default function BatterySelector({ allQuestions, onSelectBattery, onBack 
             </button>
           )}
         </div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'center' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center', marginTop: 8 }}>
           {Array.from({ length: numBaterias }).map((_, i) => {
             let ini, fin;
             if (i === 12) { // batería 13 (índice 12)
@@ -71,25 +75,49 @@ export default function BatterySelector({ allQuestions, onSelectBattery, onBack 
                 key={i}
                 onClick={() => onSelectBattery(i)}
                 style={{
-                  fontSize: 18,
-                  padding: '12px 18px',
-                  borderRadius: 8,
+                  fontSize: 13,
+                  padding: '5px 8px',
+                  borderRadius: 4,
                   background: '#217a2b',
                   color: 'white',
                   border: 'none',
                   cursor: 'pointer',
                   fontWeight: 600,
                   letterSpacing: 1,
-                  boxShadow: '0 2px 8px #0001',
-                  minWidth: 80
+                  boxShadow: '0 1px 4px #0001',
+                  minWidth: 60,
+                  maxWidth: 110
                 }}
                 onMouseOver={e => e.currentTarget.style.background = '#1a2a4a'}
                 onMouseOut={e => e.currentTarget.style.background = '#217a2b'}
               >
-                {`Batería ${i + 1}`}<br /><span style={{ fontSize: 13, fontWeight: 400 }}>{ini + 1}-{fin + 1}</span>
+                {`Batería ${i + 1}`}<br /><span style={{ fontSize: 11, fontWeight: 400 }}>{ini + 1}-{fin + 1}</span>
               </button>
             );
           })}
+          {/* Botón de preguntas dudosas como batería extra */}
+          {(user && !user.guest && preguntasDudosas && preguntasDudosas.length > 0) && (
+            <button
+              key="dudosas"
+              onClick={() => onSelectBattery('dudosas')}
+              style={{
+                fontSize: 13,
+                padding: '5px 8px',
+                borderRadius: 4,
+                background: '#1a2a4a',
+                color: 'white',
+                border: 'none',
+                cursor: 'pointer',
+                fontWeight: 600,
+                letterSpacing: 1,
+                boxShadow: '0 1px 4px #0001',
+                minWidth: 60,
+                maxWidth: 110
+              }}
+            >
+              Preguntas dudosas
+            </button>
+          )}
         </div>
       </div>
     </div>

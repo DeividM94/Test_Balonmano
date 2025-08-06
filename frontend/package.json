@@ -9,6 +9,7 @@
     "postinstall": "chmod +x node_modules/.bin/vite || true"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.53.0",
     "@vitejs/plugin-react": "^4.7.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"

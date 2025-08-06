@@ -1,0 +1,11 @@
+# Ignorar archivos de entorno
+.env
+.env.*
+# Ignorar archivos de entorno en subcarpetas
+**/.env
+**/.env.*
+
+# Ignorar dependencias
+node_modules/
+frontend/node_modules/
+backend/node_modules/
